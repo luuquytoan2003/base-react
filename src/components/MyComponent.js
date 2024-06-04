@@ -1,6 +1,6 @@
 import React from 'react';
-import UserInfor from './UserInfor';
 import DisplayInfor from './DisplayInfor';
+import AddUserInfor from './AddUserInfor';
 
 
 class MyComponent extends React.Component{
@@ -23,13 +23,28 @@ class MyComponent extends React.Component{
             }
         ]
     }
+    handleAddNewUser = (newUser) => {
+        this.setState({
+            listUser: [newUser,...this.state.listUser]
+        })
+    }
+    handeDeleteUser = (userId) =>{
+        let listUserClone = this.state.listUser;
+        listUserClone = listUserClone.filter(item => item.id !== userId);
+        this.setState({
+            listUser : listUserClone
+        })
+    }
     render(){
         return(
             <div>
-                <UserInfor/>
+                <AddUserInfor
+                    handleAddNewUser={this.handleAddNewUser}
+                />
                 <br/>
                 <DisplayInfor 
                     listUser={this.state.listUser}
+                    handeDeleteUser={this.handeDeleteUser}
                 />
             </div>
         );
