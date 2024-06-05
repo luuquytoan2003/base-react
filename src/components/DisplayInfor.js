@@ -18,7 +18,7 @@ const DisplayInfor = (props) => {
             alert("me");
         }
         console.log(">>> call me useEffect")
-    }, []);
+    }, [listUser]);
     return (
         <div className="display-infor-container">
             <div>
