@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { ToastHeader } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { FcPlus } from 'react-icons/fc';
+import { toast } from 'react-toastify';
 
 
 function ModalCreateUser(props) {
@@ -46,12 +48,26 @@ function ModalCreateUser(props) {
         })
     }
 
+    const validateEmail = (email) => {
+        return String(email)
+            .toLowerCase()
+            .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            );
+    };
+
     const handSubmitCreateUser = async () => {
         //validate
+        const isValidEmail = validateEmail(user.email);
+        if (!isValidEmail) {
+            toast.error('invalid email');
+            return;
+        }
+        if (!user.password) {
+            toast.error('invalid password');
+            return;
+        }
 
-        //call apis
-        // const data = user;
-        // console.log(data);
 
         const data = new FormData();
         data.append('email', user.email);
@@ -62,7 +78,13 @@ function ModalCreateUser(props) {
 
         let res = await axios.post('http://localhost:8081/api/v1/participant', data);
         console.log(">>>check response", res);
-
+        if (res.data && res.data.EC === 0) {
+            toast.success(res.data.EM);
+            handleClose()
+        }
+        if (res.data && res.data.EC !== 0) {
+            toast.error(res.data.EM);
+        }
     }
     return (
         <>
